@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>L.A. Arts District & Surrounding Communities</title>
+	<script src="http://d3js.org/d3.v4.min.js" charset="utf-8"></script>
+	<script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+	<script src="http://d3js.org/queue.v1.min.js"></script>
+	<script src = "../data/census_tracts_with_data.json"></script>
+</head>
+<body>
+	<!-- Page elements and content go here. -->
+	<h1>Mapping Gentrification in the Arts District</h1>
+    <form>
+        <input type="radio" name="data" id="NHW_CHG_00_15" checked="true"/> <label for="race">Race</label>
+        <input type="radio" name="data" id="INCOME_CHG"/> <label for="income">Income</label>
+    </form>
+
+	<script>
+		// Width and Height of the whole visualization
+		var width = window.innerWidth,
+        height = window.innerHeight;
+
+		// Create SVG
+		var svg = d3.select( "body" )
+		    .append( "svg" )
+		    .attr( "width", width )
+		    .attr( "height", height );
+
+		// Append empty placeholder g element to the SVG
+		// g will contain geometry elements
+		var g = svg.append( "g" )
+
+ 	    // Create GeoPath function that uses built-in D3 functionality 
+		// to turn lat/lon coordinates into screen coordinates
+		var projection = d3.geoAlbers().fitSize([width, height], tracts);
+		var path = d3.geoPath().projection(projection);
+
+		var data_set = {
+	    	"NHW_CHG_00_15" : {
+	    		"color_domain" : [-10, -5, 0, 5, 10, 20],
+	    		"color_range" : d3.schemeBlues[7],
+	    		"legend_domain" : [-20, 30],
+	    		"legend_range" : [0, 300]
+	    	},
+	    	"INCOME_CHG" : {
+	    		"color_domain" : [-25000, -10000, -5000, 0, 5000, 10000, 20000, 50000],
+	    		"color_range" : d3.schemeBlues[7],
+	    		"legend_domain" : [-25000, 47000],
+	    		"legend_range" : [0, 300]
+	    	}
+		}
+
+		// Race data - % change in non-Latinx white folks
+		var color = d3.scaleThreshold()
+		    .domain(data_set["NHW_CHG_00_15"].color_domain)
+		    .range(data_set["NHW_CHG_00_15"].color_range);
+
+		// Race data - % change in non-Latinx white folks
+		//var color = d3.scaleThreshold()
+		//    .domain([-10, -5, 0, 5, 10, 20])
+		//    .range(d3.schemeBlues[7]);
+		    // change color values!!
+		    //.range(["#f2f0f7", "#dadaeb", "#bcbddc", "#9e9ac8", "#756bb1", "#54278f", "#54278f"]);
+
+		var color2 = d3.scaleThreshold()
+			.domain([-25000, -10000, -5000, 0, 5000, 10000, 20000, 50000])
+			.range(d3.schemeBlues[7]);
+		 
+		// A position encoding for the key
+		var x = d3.scaleLinear()
+		    .domain([-20, 30])
+		    .range([0, 300]); // not sure what this does??
+
+		var x2 = d3.scaleLinear()
+		    .domain([-25000, 47000])
+		    .range([0, 300]); // not sure what this does??
+
+		g = svg.append("g")
+		.attr("class", "key")
+		.attr("transform", "translate(40,40)");
+
+		g.selectAll("rect")
+		    .data(color.range().map(function(d, i) {
+		      return {
+		        x0: i ? x(color.domain()[i - 1]) : x.range()[0],
+		        x1: i < color.domain().length ? x(color.domain()[i]) : x.range()[1],
+		        z: d
+		      };
+		    }))
+		  .enter().append("rect")
+		    .attr("height", 8)
+		    .attr("x", function(d) { return d.x0; })
+		    .attr("width", function(d) { return d.x1 - d.x0; })
+		    .attr("fill", function(d) { return d.z; });
+
+		g.append("text")
+		    .attr("class", "caption")
+		    .attr("x", x.range()[0])
+		    .attr("y", -6)
+		    .attr("fill", "#000")
+		    .attr("text-anchor", "start")
+		    .attr("font-weight", "bold")
+		    .text("% change in non-Latinx white");
+
+		g.call(d3.axisBottom(x)
+		 	.tickSize(13)
+		 	.tickValues(color.domain()))
+		.select(".domain")
+    		.remove();
+
+		// Select non-existent elements, bind the data, append the elements, 
+		// and apply attributes
+		svg.append("g")
+		  	.attr("class", "tract")
+		  .selectAll("path")
+  		  .data(tracts.features)
+		  .enter().append("path")  
+		  //	.attr("fill", "grey")
+		  	.attr("d", path)
+		  .style("fill", function(d) { return color(d.density = d.properties.NHW_CHG_00_15); })
+		  	.attr("stroke-width", "1")
+		  	.attr("stroke", "white")
+		  .append("title")
+            .text(function(d) { return d.properties.NHW_CHG_00_15 + "%"; });
+
+		// Add district labels
+		svg.selectAll("label")
+		    .data(tracts.features)
+		    .enter()
+		    .append("text")
+		      .attr("class", "label")
+		      .attr("transform", function(d) { return "translate(" + path.centroid(d) + ")"; })
+		      .attr ("text-anchor", "middle")
+		      .text(function(d) { return d.properties.NAME;} );  
+
+		function shade (){          
+            d3.selectAll('.county')
+                .transition()
+                .attr( "fill", function(d){
+                    return jenks(d.properties[attribute]/d.properties.ALAND);  
+                });   
+        }
+
+	</script>	
+</body>
+</html>
