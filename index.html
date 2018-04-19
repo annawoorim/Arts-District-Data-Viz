@@ -13,6 +13,7 @@
     <form>
         <input type="radio" name="data" id="NHW_CHG_00_15" checked="true"/> <label for="race">Race</label>
         <input type="radio" name="data" id="INCOME_CHG" /> <label for="income">Income</label>
+        <input type="radio" name="data" id="RENT_CHG" /> <label for="rent">Rent</label>
     </form>
 
 	<script>
@@ -32,6 +33,14 @@
 	    		"legend_range" : [0, 300],
 	    		"label" : "$ (in thousands) change in median yearly income",
 	    		"ratio" : 1000
+	    	},
+	    	"RENT_CHG" : {
+	    		"color_domain" : [-700, -100, 0, 100, 300, 1000, 1500],
+	    		"color_range" : d3.schemeBlues[8],
+	    		"legend_domain" : [-700, 1500],
+	    		"legend_range" : [0, 350],
+	    		"label" : "$ change in median monthly rent",
+	    		"ratio" : 1
 	    	}
 		}
 
@@ -40,21 +49,16 @@
         height = window.innerHeight;
 
 		// Create SVG
-		var svg = d3.select( "body" )
+		var svgMap = d3.select( "body" )
 		    .append( "svg" )
 		    .attr( "width", width )
-		    .attr( "height", height );
+		    .attr( "height", height )
+		    .append("g");
 
  	    // Create GeoPath function that uses built-in D3 functionality 
 		// to turn lat/lon coordinates into screen coordinates
 		var projection = d3.geoAlbers().fitSize([width, height], tracts);
 		var path = d3.geoPath().projection(projection);
-
-		// Append empty placeholder g element to the SVG
-		// g will contain geometry elements
-		var g = svg.append("g")
-		.attr("class", "key")
-		.attr("transform", "translate(40,40)");
 
 		var color;
 		var selected = "NHW_CHG_00_15";
@@ -67,13 +71,21 @@
 			    //.range(["#f2f0f7", "#dadaeb", "#bcbddc", "#9e9ac8", "#756bb1", "#54278f", "#54278f"]);
 		}
 
-		function updateLegend(selectedData) {			 
+		function updateLegend(selectedData) {
+			d3.select("body").selectAll("text").remove();
+			d3.select("body").selectAll(".tick").remove();
+
+			var svgLegend = svgMap.append("g")
+				.attr("class", "key")
+				.attr("transform", "translate(40,40)");
+			 
 			// A position encoding for the key
+
 			var x = d3.scaleLinear()
 			    .domain(data_set[selectedData].legend_domain)
 			    .range(data_set[selectedData].legend_range); // not sure what this does??
 
-			g.selectAll("rect")
+			svgLegend.selectAll("rect")
 			    .data(color.range().map(function(d, i) {
 			      return {
 			        x0: i ? x(color.domain()[i - 1]) : x.range()[0],
@@ -87,7 +99,7 @@
 			    .attr("width", function(d) { return d.x1 - d.x0; })
 			    .attr("fill", function(d) { return d.z; });
 
-			g.append("text")
+			svgLegend.append("text")
 			    .attr("class", "caption")
 			    .attr("x", x.range()[0])
 			    .attr("y", -6)
@@ -96,17 +108,20 @@
 			    .attr("font-weight", "bold")
 			    .text(data_set[selectedData].label);
 
-			g.call(d3.axisBottom(x)
-			 	.tickSize(13)
+			svgLegend.call(d3.axisBottom(x)
+			 	.tickSizeInner(13)
+			 	.tickSizeOuter(0)
 			 	.tickValues(color.domain()))
 			.select(".domain")
 	    		.remove();
     	}
 
     	function updateMap(selectedData) {
+    		d3.select("g").selectAll("path").remove();
+
 			// Select non-existent elements, bind the data, append the elements, 
 			// and apply attributes
-			svg.append("g")
+			svgMap.append("g")
 			  	.attr("class", "tract")
 			  .selectAll("path")
 	  		  .data(tracts.features)
@@ -121,7 +136,7 @@
 
 		function addLabels() {
 			// Add district labels
-			svg.selectAll("label")
+			svgMap.selectAll("label")
 			    .data(tracts.features)
 			    .enter()
 			    .append("text")
@@ -146,7 +161,6 @@
 		d3.selectAll("input")
 		  .on("change", function() {
 		    selected = this.id;
-		    console.log(selected);
 		    updateColor(selected);
 		    updateLegend(selected);
 		    updateMap(selected);
