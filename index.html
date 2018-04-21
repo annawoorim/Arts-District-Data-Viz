@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<title>L.A. Arts District & Surrounding Communities</title>
-	<script src="http://d3js.org/d3.v4.min.js" charset="utf-8"></script>
+	<title>Mapping Gentrification in the Arts District</title>
+	<meta charset="utf-8">
+	<script src="http://d3js.org/d3.v4.min.js"></script>
+	<script src="//d3js.org/topojson.v1.min.js"></script>
 	<script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
-	<script src="http://d3js.org/queue.v1.min.js"></script>
-	<script src = "../data/census_tracts_with_data.json"></script>
 </head>
 <body>
 	<!-- Page elements and content go here. -->
@@ -16,156 +16,6 @@
         <input type="radio" name="data" id="RENT_CHG" /> <label for="rent">Rent</label>
     </form>
 
-	<script>
-		var data_set = {
-	    	"NHW_CHG_00_15" : {
-	    		"color_domain" : [-10, -5, 0, 5, 10, 20],
-	    		"color_range" : d3.schemeBlues[7],
-	    		"legend_domain" : [-20, 30],
-	    		"legend_range" : [0, 300],
-	    		"label" : "% change in non-Latinx white",
-	    		"ratio" : 1
-	    	},
-	    	"INCOME_CHG" : {
-	    		"color_domain" : [-25, -10, -5, 0, 5, 10, 20, 50],
-	    		"color_range" : d3.schemeBlues[9],
-	    		"legend_domain" : [-25, 50],
-	    		"legend_range" : [0, 300],
-	    		"label" : "$ (in thousands) change in median yearly income",
-	    		"ratio" : 1000
-	    	},
-	    	"RENT_CHG" : {
-	    		"color_domain" : [-700, -100, 0, 100, 300, 1000, 1500],
-	    		"color_range" : d3.schemeBlues[8],
-	    		"legend_domain" : [-700, 1500],
-	    		"legend_range" : [0, 350],
-	    		"label" : "$ change in median monthly rent",
-	    		"ratio" : 1
-	    	}
-		}
-
-		// Width and Height of the whole visualization
-		var width = window.innerWidth,
-        height = window.innerHeight;
-
-		// Create SVG
-		var svgMap = d3.select( "body" )
-		    .append( "svg" )
-		    .attr( "width", width )
-		    .attr( "height", height )
-		    .append("g");
-
- 	    // Create GeoPath function that uses built-in D3 functionality 
-		// to turn lat/lon coordinates into screen coordinates
-		var projection = d3.geoAlbers().fitSize([width, height], tracts);
-		var path = d3.geoPath().projection(projection);
-
-		var color;
-		var selected = "NHW_CHG_00_15";
-
-
-		function updateColor(selectedData) {
-			color = d3.scaleThreshold()
-			    .domain(data_set[selectedData].color_domain)
-			    .range(data_set[selectedData].color_range);
-			    //.range(["#f2f0f7", "#dadaeb", "#bcbddc", "#9e9ac8", "#756bb1", "#54278f", "#54278f"]);
-		}
-
-		function updateLegend(selectedData) {
-			d3.select("body").selectAll("text").remove();
-			d3.select("body").selectAll(".tick").remove();
-
-			var svgLegend = svgMap.append("g")
-				.attr("class", "key")
-				.attr("transform", "translate(40,40)");
-			 
-			// A position encoding for the key
-
-			var x = d3.scaleLinear()
-			    .domain(data_set[selectedData].legend_domain)
-			    .range(data_set[selectedData].legend_range); // not sure what this does??
-
-			svgLegend.selectAll("rect")
-			    .data(color.range().map(function(d, i) {
-			      return {
-			        x0: i ? x(color.domain()[i - 1]) : x.range()[0],
-			        x1: i < color.domain().length ? x(color.domain()[i]) : x.range()[1],
-			        z: d
-			      };
-			    }))
-			  .enter().append("rect")
-			    .attr("height", 8)
-			    .attr("x", function(d) { return d.x0; })
-			    .attr("width", function(d) { return d.x1 - d.x0; })
-			    .attr("fill", function(d) { return d.z; });
-
-			svgLegend.append("text")
-			    .attr("class", "caption")
-			    .attr("x", x.range()[0])
-			    .attr("y", -6)
-			    .attr("fill", "#000")
-			    .attr("text-anchor", "start")
-			    .attr("font-weight", "bold")
-			    .text(data_set[selectedData].label);
-
-			svgLegend.call(d3.axisBottom(x)
-			 	.tickSizeInner(13)
-			 	.tickSizeOuter(0)
-			 	.tickValues(color.domain()))
-			.select(".domain")
-	    		.remove();
-    	}
-
-    	function updateMap(selectedData) {
-    		d3.select("g").selectAll("path").remove();
-
-			// Select non-existent elements, bind the data, append the elements, 
-			// and apply attributes
-			svgMap.append("g")
-			  	.attr("class", "tract")
-			  .selectAll("path")
-	  		  .data(tracts.features)
-			  .enter().append("path")  
-			  	.attr("d", path)
-			  .attr("fill", function(d) { return color(d.density = d.properties[selectedData]/data_set[selectedData].ratio); })
-			  	.attr("stroke-width", "1")
-			  	.attr("stroke", "white");
-			  //.append("title")
-	          //  .text(function(d) { return d.properties[selectedData] + "%"; });
-		}
-
-		function addLabels() {
-			// Add district labels
-			svgMap.selectAll("label")
-			    .data(tracts.features)
-			    .enter()
-			    .append("text")
-			      .attr("class", "label")
-			      .attr("transform", function(d) { return "translate(" + path.centroid(d) + ")"; })
-			      .attr ("text-anchor", "middle")
-			      .text(function(d) { return d.properties.NAME;} );  
-		}
-
-		// Generate initial color
-		updateColor(selected);
-
-		// Generate initial legend
-		updateLegend(selected);
-
-		// Generate initial map
-		updateMap(selected);
-
-		addLabels();
-
-		// select variable for which to display a legend
-		d3.selectAll("input")
-		  .on("change", function() {
-		    selected = this.id;
-		    updateColor(selected);
-		    updateLegend(selected);
-		    updateMap(selected);
-		    addLabels();
-		});
-	</script>	
+	<script src = "map.js"></script>	
 </body>
 </html>
