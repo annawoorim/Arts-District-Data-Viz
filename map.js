@@ -5,38 +5,31 @@ var width,
 	color,
 	projection,
 	path,
-	selected;
+	selected,
+	colorRamp;
 
 // legend and color data
 var data_set = {
 	"NHW_CHG_00_15" : {
-		"color_domain" : [-10, -5, 0, 5, 10, 20],
-		"color_range" : d3.schemeBlues[7],
-		"legend_domain" : [-20, 30],
-		"legend_range" : [0, 300],
+		"min" : -16,
+		"max" : 26,
 		"label" : "% change in non-Latinx white",
-		"ratio" : 1
 	},
 	"INCOME_CHG" : {
-		"color_domain" : [-25, -10, -5, 0, 5, 10, 20, 50],
-		"color_range" : d3.schemeBlues[8],
-		"legend_domain" : [-25, 50],
-		"legend_range" : [0, 300],
+		"min" : -24837,
+		"max" : 46792,
 		"label" : "$ (in thousands) change in median yearly income",
-		"ratio" : 1000
 	},
 	"RENT_CHG" : {
-		"color_domain" : [-700, -100, 0, 100, 300, 1000, 1500],
-		"color_range" : d3.schemeBlues[7],
-		"legend_domain" : [-700, 1500],
-		"legend_range" : [0, 350],
+		"min" : -694,
+		"max" : 1449,
 		"label" : "$ change in median monthly rent",
-		"ratio" : 1
 	}
-}
+};
 
 function init() {
 	setMap();
+	selectionChange();
 }
 
 function setMap() {
@@ -48,25 +41,23 @@ function setMap() {
 	svg = d3.select( "body" )
 		.append( "svg" )
 		.attr( "width", width )
-		.attr( "height", height )
+		.attr( "height", height)
 		.append("g");
 
 	selected = "NHW_CHG_00_15";
-
-	// Generate initial color
-	updateColor();
 
 	// Generate initial legend
 	updateLegend();
 
 	// Generate initial map
 	loadData();
+}
 
+function selectionChange() {
 	// select variable for which to display a legend
 	d3.selectAll("input")
 		.on("change", function() {
 			selected = this.id;
-			updateColor();
 			updateLegend();
 			loadData();
 		}
@@ -85,57 +76,63 @@ function processData(error, censusTractsFile, streetsFile) {
 	updateMap(censusTractsFile, streetsFile);
 }
 
-function updateColor() {
-	color = d3.scaleThreshold()
-		.domain(data_set[selected].color_domain)
-		.range(data_set[selected].color_range);
-		//.range(["#f2f0f7", "#dadaeb", "#bcbddc", "#9e9ac8", "#756bb1", "#54278f", "#54278f"]);
-}
-
 function updateLegend() {
 	d3.select("body").selectAll("rect").remove();
 	d3.select("body").selectAll("text").remove();
 	d3.select("body").selectAll(".tick").remove();
 
-	var svgLegend = svg.append("g")
-		.attr("class", "key")
+	// Setting legend color gradient
+	var lowColor = '#f9f9f9';
+	var highColor = '#bc2a66';
+
+	var minVal = data_set[selected].min;
+	var maxVal = data_set[selected].max;
+
+	colorRamp = d3.scaleLinear().domain([minVal,maxVal]).range([lowColor,highColor]);
+
+	// add a legend
+	var w = 20, h = 300;
+
+	var key = svg.append("g")
+		.attr("class", "legend")
 		.attr("transform", "translate(40,40)");
 
-	 
-	// A position encoding for the key
+	var legend = key.append("defs")
+		.append("svg:linearGradient")
+		.attr("id", "gradient")
+		.attr("x1", "100%")
+		.attr("y1", "0%")
+		.attr("x2", "100%")
+		.attr("y2", "100%")
+		.attr("spreadMethod", "pad");
 
-	var x = d3.scaleLinear()
-		.domain(data_set[selected].legend_domain)
-		.range(data_set[selected].legend_range); // not sure what this does??
+	legend.append("stop")
+		.attr("offset", "0%")
+		.attr("stop-color", highColor)
+		.attr("stop-opacity", 1);
+		
+	legend.append("stop")
+		.attr("offset", "100%")
+		.attr("stop-color", lowColor)
+		.attr("stop-opacity", 1);
 
-	svgLegend.selectAll("rect")
-		.data(color.range().map(function(d, i) {
-			return {
-				x0: i ? x(color.domain()[i - 1]) : x.range()[0],
-				x1: i < color.domain().length ? x(color.domain()[i]) : x.range()[1],
-				z: d
-			};
-		}))
-		.enter().append("rect")
-		.attr("height", 8)
-		.attr("x", function(d) { return d.x0; })
-		.attr("width", function(d) { return d.x1 - d.x0; })
-		.attr("fill", function(d) { return d.z; });
+	key.append("rect")
+		.attr("width", w)
+		.attr("height", h)
+		.style("fill", "url(#gradient)");
 
-	svgLegend.append("text")
-		.attr("class", "caption")
-		.attr("x", x.range()[0])
-		.attr("y", -6)
-		.attr("fill", "#000")
-		.attr("text-anchor", "start")
-		.attr("font-weight", "bold")
-		.text(data_set[selected].label);
+	var y = d3.scaleLinear()
+		.range([h, 0])
+		.domain([minVal, maxVal]);
 
-	svgLegend.call(d3.axisBottom(x)
-		.tickSizeInner(13)
-		.tickSizeOuter(0)
-		.tickValues(color.domain()))
-	.select(".domain")
+	var yAxis = d3.axisRight(y);
+
+	key.append("g")
+		.attr("class", "y axis")
+		.attr("transform", "translate(21,0)")
+		.call(yAxis
+			.tickSizeOuter(0))
+		.select(".domain")
 		.remove();
 }
 
@@ -144,7 +141,7 @@ function updateMap(censusTractsFile, streetsFile) {
 
 	// Create GeoPath function that uses built-in D3 functionality 
 	// to turn lat/lon coordinates into screen coordinates
-	projection = d3.geoAlbers().fitSize([width, height], censusTractsFile);
+	projection = d3.geoAlbers().fitSize([width, height-200], censusTractsFile); // fix map height after final edits to html
 	path = d3.geoPath().projection(projection);
 
 	// Select non-existent elements, bind the data, append the elements, 
@@ -155,7 +152,8 @@ function updateMap(censusTractsFile, streetsFile) {
 		.data(censusTractsFile.features)
 		.enter().append("path")
 		.attr("d", path)
-		.attr("fill", function(d) { return color(d.density = d.properties[selected]/data_set[selected].ratio); })
+		//.attr("fill", function(d) { return color(d.density = d.properties[selected]/data_set[selected].ratio); })
+		.attr("fill", function(d) { return colorRamp(d.properties[selected]); })
 		.attr("stroke-width", "1")
 		.attr("stroke", "white");
 		//.append("title")
@@ -178,9 +176,7 @@ function updateMap(censusTractsFile, streetsFile) {
 	//console.log(projection(pointData));
 	var points = svg.append("g");
 
-	points//.selectAll("circle")
-		//.data(pointData).enter()
-		.append("circle")
+	points.append("circle")
 		.attr("cx", function (d) { return projection(pointData)[0]; })
 		.attr("cy", function (d) { return projection(pointData)[1]; })
 		.attr("opacity", 10)
@@ -189,11 +185,10 @@ function updateMap(censusTractsFile, streetsFile) {
 		.attr("r", 2)
 		.attr("fill", "red");
 
-    addLabels(censusTractsFile);
+    //addLabels(censusTractsFile);
 }
 
 function addLabels(censusTractsFile) {
-
 	// Add district labels
 	svg.selectAll("label")
 		.data(censusTractsFile.features)

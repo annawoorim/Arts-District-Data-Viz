@@ -1,0 +1,15 @@
+h1 {
+	font-family: Futura, "Trebuchet MS", Arial, sans-serif;
+	font-size: 28px;
+	text-align: center;
+}
+label {
+	font-family: Futura, "Trebuchet MS", Arial, sans-serif;
+	font-size: 14px;
+	text-align: center;
+	padding-right: 10px;
+}
+form {
+	text-align: center;
+	padding-bottom: 50px;
+}
