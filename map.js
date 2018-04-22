@@ -3,6 +3,7 @@ var width,
 	height,
 	svg,
 	color,
+	projection,
 	path,
 	selected;
 
@@ -81,8 +82,7 @@ function loadData() {
 
 function processData(error, censusTractsFile, streetsFile) {
 	if (error) throw error;
-	console.log(streetsFile);
-	updateMap(censusTractsFile);
+	updateMap(censusTractsFile, streetsFile);
 }
 
 function updateColor() {
@@ -144,7 +144,7 @@ function updateMap(censusTractsFile, streetsFile) {
 
 	// Create GeoPath function that uses built-in D3 functionality 
 	// to turn lat/lon coordinates into screen coordinates
-	var projection = d3.geoAlbers().fitSize([width, height], censusTractsFile);
+	projection = d3.geoAlbers().fitSize([width, height], censusTractsFile);
 	path = d3.geoPath().projection(projection);
 
 	// Select non-existent elements, bind the data, append the elements, 
@@ -152,7 +152,6 @@ function updateMap(censusTractsFile, streetsFile) {
 	svg.append("g")
 		.attr("class", "tract")
 		.selectAll("path")
-		//.data(censusTractsFile.features)
 		.data(censusTractsFile.features)
 		.enter().append("path")
 		.attr("d", path)
@@ -163,23 +162,38 @@ function updateMap(censusTractsFile, streetsFile) {
       //  .text(function(d) { return d.properties[selected] + "%"; });
 
     // add roads
-    // draws road boundaries
-	//var roads = svg.append("g");
+	var roads = svg.append("g");
 
-	//roads.append("path")
-	//	.datum(topojson.mesh(streetsFile, streetsFile.objects.roads_updated))
-	//	.attr("class", "road")
-	//	.attr("d", path)
-	//	.attr("fill", "transparent")
-	//	.attr("stroke", "#000")
-	//	.attr("stroke-width", 0.14);
+	roads.append("path")
+		.datum(topojson.mesh(streetsFile, streetsFile.objects.roads_updated))
+		.attr("class", "road")
+		.attr("d", path)
+		.attr("fill", "transparent")
+		.attr("stroke", "black")
+		.attr("stroke-width", 0.14);
 
-	//.datum(topojson.mesh(roadsFile, roadsFile.objects.sf))
+	//Tryna plot a point here...
+	var pointProjection = d3.geoAlbers();
+	var pointData = [-118.235144, 34.044104];
+	//console.log(projection(pointData));
+	var points = svg.append("g");
+
+	points//.selectAll("circle")
+		//.data(pointData).enter()
+		.append("circle")
+		.attr("cx", function (d) { return projection(pointData)[0]; })
+		.attr("cy", function (d) { return projection(pointData)[1]; })
+		.attr("opacity", 10)
+		.attr("stroke", "#999")
+		.attr("stroke-width", 0.06)
+		.attr("r", 2)
+		.attr("fill", "red");
 
     addLabels(censusTractsFile);
 }
 
 function addLabels(censusTractsFile) {
+
 	// Add district labels
 	svg.selectAll("label")
 		.data(censusTractsFile.features)
@@ -190,14 +204,5 @@ function addLabels(censusTractsFile) {
 			.attr ("text-anchor", "middle")
 			.text(function(d) { return d.properties.NAME;} );
 }
-
-//Tryna plot a point here...
-//svg.selectAll("circle")
-//	.data([34.045132, -118.235271]).enter()
-//	.append("circle")
-//	.attr("transform", function(d) { return "translate(" + projection([-118.235271, 34.045132]) + ")"; })
-//	.attr("cx", function (d) { console.log(projection(d)); return projection(d)[0]; })
-//	.attr("r", "8px")
-//	.attr("fill", "red");		
 
 window.onload = init();
