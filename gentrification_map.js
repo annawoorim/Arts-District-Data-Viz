@@ -190,12 +190,12 @@ function updateDemLegend() {
 
 	key.append("text")
 		.attr("class", "caption")
-		.attr("transform", "translate(0, 320)")
+		.attr("transform", "translate(0, 520)")
 		.text(data_set[selected].caption1);
 
 	key.append("text")
 			.attr("class", "caption")
-			.attr("transform", "translate(0, 336)")
+			.attr("transform", "translate(0, 536)")
 			.text(data_set[selected].caption2);
 
 	var legend = key.append("defs")
