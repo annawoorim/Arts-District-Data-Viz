@@ -13,3 +13,46 @@ form {
 	text-align: center;
 	padding-bottom: 50px;
 }
+text {
+	font-family: Futura, "Trebuchet MS", Arial, sans-serif;
+	font-size: 10px;
+	text-align: center;
+}
+.caption {
+	font-family: Futura, "Trebuchet MS", Arial, sans-serif;
+	font-size: 14px;
+	text-align: left;
+}
+#title {
+	font-size: 18px;
+}
+
+#info1 {
+	color: #666666;
+}
+#info2 {
+	color: #666666;
+}
+#info3 {
+	color: #666666;
+}
+#info4 {
+	color: #666666;
+}
+
+#demMap {
+	width: 50%;
+	float: left;
+}
+#demLegend {
+	width: 25%;
+	float: left;
+}
+#demInfo {
+	width: 25%;
+	font-family: Futura, "Trebuchet MS", Arial, sans-serif;
+	font-size: 14px;
+	float: left;
+	/*display: inline-block;*/
+	padding-top: 50px;
+}

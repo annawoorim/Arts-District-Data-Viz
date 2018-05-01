@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Mapping Gentrification in the Arts District</title>
+	<meta charset="utf-8">
+	<script src="http://d3js.org/d3.v4.min.js"></script>
+	<script src="//d3js.org/topojson.v1.min.js"></script>
+	<script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+	<link rel='stylesheet' type'text/css' href='main.css'/>
+</head>
+<body>
+	<!-- Page elements and content go here. -->
+	<h1>Mapping Gentrification in the Arts District</h1>
+    <form>
+        <input type="radio" name="data" id="NHW_CHG_00_15" onClick="showContent(this)" checked="true"/> <label for="race">Race</label>
+        <input type="radio" name="data" id="INCOME_CHG" onClick="showContent(this)" /> <label for="income">Income</label>
+        <input type="radio" name="data" id="RENT_CHG" onClick="showContent(this)" /> <label for="rent">Rent</label>
+        <input type="radio" name="data" id="NEW_DEV" onClick="hideContent(this)"/> <label for="new developments">New Developments</label>
+    </form>
+    <div id="demLegend"></div>
+    <div id="demMap"></div>
+    <div id="demInfo">
+        <span id="title"></span><br/><br/>
+        <span id="label1"></span><span id="info1"></span><br/>
+        <span id="label2"></span><span id="info2"></span><br/>
+        <span id="label3"></span><span id="info3"></span><br/>
+        <span id="label4"></span><span id="info4"></span><br/><br/>
+        <iframe id = "streetView" src = "" width="500" height="300" frameborder="0" style="border:0" allowfullscreen></iframe>
+    </div>
+
+	<script src = "gentrification_map.js"></script>	
+    <script type="text/javascript"> 
+        function showContent(c) {
+            if (c.checked == true) {
+                document.getElementById("demLegend").style.display = 'block';
+            }
+        }
+        function hideContent(c) {
+            if (c.checked == true) {
+                document.getElementById("demLegend").style.display = 'none';
+            } 
+        }
+    </script>
+</body>
+</html>
