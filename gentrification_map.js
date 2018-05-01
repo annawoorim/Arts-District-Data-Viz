@@ -169,7 +169,7 @@ function updateDemLegend() {
 	colorRamp = d3.scaleLinear().domain([minVal,maxVal]).range([lowColor,highColor]);
 
 	// add a legend
-	var w = 20, h = 300;
+	var w = 20, h = 500;
 
 	var y = d3.scaleLinear()
 		.range([h, 0])
@@ -232,7 +232,7 @@ function updateDemMap(censusTractsFile, streetsFile) {
 	// Create GeoPath function that uses built-in D3 functionality 
 	// to turn lat/lon coordinates into screen coordinates
 	//projection = d3.geoAlbers().fitSize([width, height-200], censusTractsFile); // fix map height after final edits to html
-	projection = d3.geoAlbers().fitSize([mapWidth, 500], censusTractsFile);
+	projection = d3.geoAlbers().fitSize([mapWidth, 1000], censusTractsFile);
 	path = d3.geoPath().projection(projection);
 
 	// Select non-existent elements, bind the data, append the elements, 
@@ -300,7 +300,7 @@ function updateBuildingMap(censusTractsFile, streetsFile, buildingFile) {
 	// Create GeoPath function that uses built-in D3 functionality 
 	// to turn lat/lon coordinates into screen coordinates
 	//projection = d3.geoAlbers().fitSize([width, height-200], censusTractsFile); // fix map height after final edits to html
-	projection = d3.geoAlbers().fitSize([mapWidth, 500], censusTractsFile);
+	projection = d3.geoAlbers().fitSize([mapWidth, 1000], censusTractsFile);
 	path = d3.geoPath().projection(projection);
 
 	// Select non-existent elements, bind the data, append the elements, 
