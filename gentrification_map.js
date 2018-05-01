@@ -81,13 +81,13 @@ function setMap() {
 		.append( "svg" )
 		.attr( "width", mapWidth)
 		//.attr( "height", height)
-		.attr( "height", mapHeight)
+		.attr( "height", 1000)
 		.append("g");
 
 	svgLegend = d3.select( "#demLegend" )
 		.append( "svg" )
 		.attr( "width", legendWidth)
-		.attr( "height", mapHeight)
+		.attr( "height", 1000)
 		.append("g");
 
 	svgInfo = d3.select( "#demInfo" )
