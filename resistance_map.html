@@ -3,29 +3,66 @@
 <head>
 	<title>Mapping Resistance in the Arts District</title>
 	<meta charset="utf-8">
-	<script src="http://d3js.org/d3.v4.min.js"></script>
-	<script src="//d3js.org/topojson.v1.min.js"></script>
+	<script src="https://d3js.org/d3.v4.min.js"></script>
+	<script src="https://d3js.org/topojson.v1.min.js"></script>
 	<script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
 	<link rel='stylesheet' type'text/css' href='main.css'/>
 </head>
 <body>
 	<!-- Page elements and content go here. -->
 	<h1>Mapping Resistance in the Arts District</h1>
+    <div id = "description">
+            The Arts District in Los Angeles has been a site of gentrification for the last two decades.<br/> 
+            But it has also been a site of resistance. This map aims to visualize the demographic changes and acts of  resistance that have emerged throughout this process of gentrification.
+            <a href = "javascript:showDescription('essayBox')">...more</a><br/><br/>
+    </div>
+    <div id= "essayBox">
+            <div id="essayBox-close" class="glyphicon glyphicon-remove"></div>
+            <div id="essayContent">
+                    <p>The demographic data is sourced from the U.S. Census Bureau, the map boundaries are sourced from the LA Online Data Portal, and the building data is sourced from built:LA, Curbed, Google Maps, Architectural Records, and the websites of the buildings and businesses.</p>
+                    <!--<a id="backToMap" href="#">back to map</a>-->
+                    <a href = "javascript:showDescription('essayBox')">back to map</a>
+            </div>
+    </div>
     <form>
-        <input type="radio" name="data" id="NHW_CHG_00_15" checked="true"/> <label for="race">Race</label>
-        <input type="radio" name="data" id="INCOME_CHG" /> <label for="income">Poverty</label>
-        <input type="radio" name="data" id="RENT_CHG" /> <label for="rent">Affordable Housing</label>
-        <input type="radio" name="data" id="NEW_DEV" /> <label for="new developments">Community Action</label>
+        <input type="radio" name="data" id="NW_CHG" onClick="showContent(this)" checked="true"/> <label for="race">Race</label>
+        <input type="radio" name="data" id="POV_CHG" onClick="showContent(this)" /> <label for="poverty">Poverty</label>
+        <input type="radio" name="data" id="HOU_CHG" onClick="showContent(this)" /> <label for="affordable housing">Affordable Housing</label>
+        <input type="radio" name="data" id="RES" onClick="hideContent(this)"/> <label for="acts of resistance">Acts of Resistance</label>
     </form>
-    <div id="demLegend"></div>
+    <div id="demLegend">
+        <span id="caption"></span>
+    </div>
     <div id="demMap"></div>
     <div id="demInfo">
         <span id="title"></span><br/><br/>
-        Neighborhood: <span id="neighborhood"></span><br/>
-        Change from 2000-2015: <span id="value0015"></span><br/>
-        2000: <span id = "value00"></span><br/>
-        2015: <span id = "value15"></span><br/> 
+        <span id="label1"></span><span id="info1"></span><br/>
+        <span id="label2"></span><span id="info2"></span><br/>
+        <span id="label3"></span><span id="info3"></span><br/>
+        <span id="label4"></span><span id="info4"></span><br/><br/>
+        <iframe id = "streetView" src = "" width="800" height="600" frameborder="0" style="border:0" allowfullscreen></iframe>
     </div>
+
 	<script src = "resistance_map.js"></script>	
+    <script type="text/javascript"> 
+        function showContent(c) {
+            if (c.checked == true) {
+                document.getElementById("demLegend").style.display = 'block';
+            }
+        }
+        function hideContent(c) {
+            if (c.checked == true) {
+                document.getElementById("demLegend").style.display = 'none';
+            } 
+        }
+        function showDescription(c) {
+            if (document.getElementById(c).style.display == "none") {
+                document.getElementById(c).style.display = "block";
+                document.getElementById(c).style.opacity = 1;
+            } else {
+                document.getElementById(c).style.display = "none";
+            };
+        }
+    </script>
 </body>
 </html>

@@ -128,7 +128,7 @@ function selectionChange() {
 
 function loadData() {
   d3.queue()
-    .defer(d3.json, "data/census_tracts_with_data_updated2.json")
+    .defer(d3.json, "data/census_tracts_with_data_updated3.json")
     .defer(d3.json, "data/roads_updated_topo.json")
     .defer(d3.csv, "data/building_gentrification_data_updated2.csv")
     .await(processData);
