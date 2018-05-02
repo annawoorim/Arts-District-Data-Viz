@@ -11,13 +11,30 @@
 <body>
 	<!-- Page elements and content go here. -->
 	<h1>Mapping Gentrification in the Arts District</h1>
+    <div id = "description">
+            The Arts District in Los Angeles has been a site of gentrification for the last two decades.<br/> 
+            This map aims to visualize the demographic changes and new developments that have emerged throughout this process of gentrification.
+            <!--<a id="showMore" href="#"> ... more </a><br/><br/>-->
+            <!--<a id="showMore" onClick = "showDescription('essayBox')">...more</a>-->
+            <a href = "javascript:showDescription('essayBox')">...more</a><br/><br/>
+    </div>
+    <div id= "essayBox">
+            <div id="essayBox-close" class="glyphicon glyphicon-remove"></div>
+            <div id="essayContent">
+                    <p>The demographic data is sourced from the U.S. Census Bureau, the map boundaries are sourced from the LA Online Data Portal, and the building data is sourced from built:LA, Curbed, Google Maps, Architectural Records, and the websites of the buildings and businesses.</p>
+                    <!--<a id="backToMap" href="#">back to map</a>-->
+                    <a href = "javascript:showDescription('essayBox')">back to map</a>
+            </div>
+    </div>
     <form>
         <input type="radio" name="data" id="NHW_CHG_00_15" onClick="showContent(this)" checked="true"/> <label for="race">Race</label>
         <input type="radio" name="data" id="INCOME_CHG" onClick="showContent(this)" /> <label for="income">Income</label>
         <input type="radio" name="data" id="RENT_CHG" onClick="showContent(this)" /> <label for="rent">Rent</label>
         <input type="radio" name="data" id="NEW_DEV" onClick="hideContent(this)"/> <label for="new developments">New Developments</label>
     </form>
-    <div id="demLegend"></div>
+    <div id="demLegend">
+        <span id="caption"></span>
+    </div>
     <div id="demMap"></div>
     <div id="demInfo">
         <span id="title"></span><br/><br/>
@@ -25,7 +42,7 @@
         <span id="label2"></span><span id="info2"></span><br/>
         <span id="label3"></span><span id="info3"></span><br/>
         <span id="label4"></span><span id="info4"></span><br/><br/>
-        <iframe id = "streetView" src = "" width="500" height="300" frameborder="0" style="border:0" allowfullscreen></iframe>
+        <iframe id = "streetView" src = "" width="800" height="600" frameborder="0" style="border:0" allowfullscreen></iframe>
     </div>
 
 	<script src = "gentrification_map.js"></script>	
@@ -39,6 +56,14 @@
             if (c.checked == true) {
                 document.getElementById("demLegend").style.display = 'none';
             } 
+        }
+        function showDescription(c) {
+            if (document.getElementById(c).style.display == "none") {
+                document.getElementById(c).style.display = "block";
+                document.getElementById(c).style.opacity = 1;
+            } else {
+                document.getElementById(c).style.display = "none";
+            };
         }
     </script>
 </body>

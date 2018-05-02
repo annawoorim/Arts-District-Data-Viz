@@ -1,11 +1,11 @@
 h1 {
 	font-family: Futura, "Trebuchet MS", Arial, sans-serif;
-	font-size: 28px;
+	font-size: 36px;
 	text-align: center;
 }
 label {
 	font-family: Futura, "Trebuchet MS", Arial, sans-serif;
-	font-size: 14px;
+	font-size: 18px;
 	text-align: center;
 	padding-right: 10px;
 }
@@ -13,14 +13,62 @@ form {
 	text-align: center;
 	padding-bottom: 50px;
 }
+
+/* Description */
+#showMore{
+  cursor: pointer;
+}
+
+#essayBox{
+  position: absolute;
+  display: none;
+  top: 90px;
+  left:0px;
+  min-height: 100%;
+  border-radius: 5px;
+  padding-left: 180px;
+  padding-right: 180px;
+  /*padding-bottom: 40px;*/
+  background-color:rgba(255, 255, 255, 0.93);
+  z-index:1000;
+  font-family: Futura, "Trebuchet MS", Arial, sans-serif;
+  font-size: 14px;
+  color: #666666;
+}
+
+#essayBox-close {
+  cursor: pointer;
+  height: 15%;
+  width: 5%;
+  /*padding: 5px;*/
+  position: absolute;
+  top: 2%;
+  left: 95%;
+  color:rgb(222,16,40);
+}
+
+#essayContent p {
+	text-align: left;
+	margin-bottom: 20px;
+}
+
 text {
 	font-family: Futura, "Trebuchet MS", Arial, sans-serif;
-	font-size: 10px;
+	font-size: 14px;
 	text-align: center;
+}
+#description {
+	font-family: Futura, "Trebuchet MS", Arial, sans-serif;
+	font-size: 14px;
+	text-align: center;
+	padding-left: 150px;
+	padding-right: 150px;
+	padding-bottom: 5px;
+	color: #666666;
 }
 .caption {
 	font-family: Futura, "Trebuchet MS", Arial, sans-serif;
-	font-size: 14px;
+	font-size: 16px;
 	text-align: left;
 }
 #title {
@@ -51,7 +99,7 @@ text {
 #demInfo {
 	width: 25%;
 	font-family: Futura, "Trebuchet MS", Arial, sans-serif;
-	font-size: 14px;
+	font-size: 18px;
 	float: left;
 	/*display: inline-block;*/
 	padding-top: 50px;

@@ -1,10 +1,11 @@
 // Global variables
-var width,
-	height,
-	mapWidth,
-	mapHeight,
-	legendWidth,
-	infoWidth,
+var width = 0,
+	height = 0,
+	mapWidth = 0,
+	mapHeight = 0,
+	legendWidth = 0,
+	legendHeight = 0,
+	infoWidth = 0,
 	svgMap,
 	svgLegend,
 	svgInfo,
@@ -19,13 +20,13 @@ var data_set = {
 	"NHW_CHG_00_15" : {
 		"min" : -16,
 		"max" : 26,
-		"title" : "% of non-Hispanic white people",
+		"title" : "% of non-Hispanic whites",
 		"label1" : "Neighborhood: ",
 		"label2" : "Change from 2000-2015: ",
 		"label3" : "2000: ",
 		"label4" : "2015: ",
-		"caption1" : "% change in non-Hispanic white",
-		"caption2" : "people from 2000-2015",
+		"caption1" : "% change in non-Hispanic whites",
+		"caption2" : "from 2000-2015",
 		"unit" : "%",
 	},
 	"INCOME_CHG" : {
@@ -53,7 +54,7 @@ var data_set = {
 		"unit" : " dollars",
 	},
 	"NEW_DEV" : {
-		"title" : "New Developments from 2005-2018",
+		"title" : "New Developments in the Arts District from 2005-2018",
 		"label1" : "Name: ",
 		"label2" : "Address: ",
 		"label3" : "Type: ",
@@ -69,25 +70,27 @@ function init() {
 function setMap() {
 	// Width and Height of the whole visualization
 	//width = window.innerWidth;
-    height = 500;
+    //height = 500;
+    height = window.innerHeight;
 
     mapWidth = document.getElementById("demMap").clientWidth;
     mapHeight = document.getElementById("demMap").clientHeight;
     legendWidth = document.getElementById("demLegend").clientWidth;
+    legendHeight = document.getElementById("demLegend").clientHeight;
     infoWidth = document.getElementById("demInfo").clientWidth;
+
 
 	// Create SVG
 	svgMap = d3.select( "#demMap" )
 		.append( "svg" )
 		.attr( "width", mapWidth)
-		//.attr( "height", height)
-		.attr( "height", 1000)
+		.attr( "height", height)
 		.append("g");
 
 	svgLegend = d3.select( "#demLegend" )
 		.append( "svg" )
 		.attr( "width", legendWidth)
-		.attr( "height", 1000)
+		.attr( "height", height)
 		.append("g");
 
 	svgInfo = d3.select( "#demInfo" )
@@ -169,7 +172,8 @@ function updateDemLegend() {
 	colorRamp = d3.scaleLinear().domain([minVal,maxVal]).range([lowColor,highColor]);
 
 	// add a legend
-	var w = 20, h = 500;
+	var w = 20, h = height/2;
+	var caption1 = h + 26, caption2 = h + 48;
 
 	var y = d3.scaleLinear()
 		.range([h, 0])
@@ -188,14 +192,17 @@ function updateDemLegend() {
 		.select(".domain")
 		.remove();
 
+	/*d3.select("#caption")
+		.text(data_set[selected].caption1);*/
+
 	key.append("text")
 		.attr("class", "caption")
-		.attr("transform", "translate(0, 520)")
+		.attr("transform", function () {return "translate(" + 0 + "," + caption1 + ")";})
 		.text(data_set[selected].caption1);
 
 	key.append("text")
 			.attr("class", "caption")
-			.attr("transform", "translate(0, 536)")
+			.attr("transform", function () {return "translate(" + 0 + "," + caption2 + ")";})
 			.text(data_set[selected].caption2);
 
 	var legend = key.append("defs")
@@ -232,7 +239,7 @@ function updateDemMap(censusTractsFile, streetsFile) {
 	// Create GeoPath function that uses built-in D3 functionality 
 	// to turn lat/lon coordinates into screen coordinates
 	//projection = d3.geoAlbers().fitSize([width, height-200], censusTractsFile); // fix map height after final edits to html
-	projection = d3.geoAlbers().fitSize([mapWidth, 1000], censusTractsFile);
+	projection = d3.geoAlbers().fitSize([mapWidth, height], censusTractsFile);
 	path = d3.geoPath().projection(projection);
 
 	// Select non-existent elements, bind the data, append the elements, 
@@ -300,7 +307,7 @@ function updateBuildingMap(censusTractsFile, streetsFile, buildingFile) {
 	// Create GeoPath function that uses built-in D3 functionality 
 	// to turn lat/lon coordinates into screen coordinates
 	//projection = d3.geoAlbers().fitSize([width, height-200], censusTractsFile); // fix map height after final edits to html
-	projection = d3.geoAlbers().fitSize([mapWidth, 1000], censusTractsFile);
+	projection = d3.geoAlbers().fitSize([mapWidth, height], censusTractsFile);
 	path = d3.geoPath().projection(projection);
 
 	// Select non-existent elements, bind the data, append the elements, 
@@ -341,7 +348,7 @@ function updateBuildingMap(censusTractsFile, streetsFile, buildingFile) {
 		.attr("opacity", 10)
 		.attr("stroke", "#999")
 		.attr("stroke-width", 1)
-		.attr("r", 2)
+		.attr("r", 4)
 		.attr("fill", "yellow")
 		.attr("transform","translate(-100, -120) scale(1.5,1.5)");
 
@@ -353,7 +360,7 @@ function updateBuildingMap(censusTractsFile, streetsFile, buildingFile) {
 		.attr("cx", function(d) {return projection([Number(d.lat), Number(d.long)])[0];})
 		.attr("cy", function(d) {return projection([Number(d.lat), Number(d.long)])[1];})
 		.attr("opacity", 0.0)
-		.attr("r", 3)
+		.attr("r", 5)
 		.attr("fill", "#999")
 		.attr("transform","translate(-100, -120) scale(1.5,1.5)")
 
