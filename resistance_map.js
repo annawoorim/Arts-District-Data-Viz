@@ -49,12 +49,12 @@ var data_set = {
 		"label2" : "Change from 2000-2015: ",
 		"label3" : "2000: ",
 		"label4" : "2015: ",
-		"caption1" : "change in numbers of households with",
+		"caption1" : "change in # of households with",
 		"caption2" : "section 8 voucher from 2000-2015",
 		"unit" : " households",
 	},
-	"NEW_DEV" : {
-		"title" : "Acts of Resistance in the Arts District from 2005-2018",
+	"RES" : {
+		"title" : "Acts of Resistance in the Arts District from 2009-2017",
 		"label1" : "Name: ",
 		"label2" : "Address: ",
 		"label3" : "Type: ",
@@ -130,7 +130,7 @@ function loadData() {
   d3.queue()
     .defer(d3.json, "data/census_tracts_with_data_updated3.json")
     .defer(d3.json, "data/roads_updated_topo.json")
-    .defer(d3.csv, "data/building_gentrification_data_updated2.csv")
+    .defer(d3.csv, "data/resistance_data.csv")
     .await(processData);
 }
 
@@ -383,7 +383,7 @@ function updateBuildingMap(censusTractsFile, streetsFile, buildingFile) {
 				.text(d.address)
 				.style("color", "#666666");
 			d3.select("#info3")
-				.text(d.type);
+				.text(d.event);
 			d3.select("#info4")
 				.text(d.year);
 			d3.select("#streetView")

@@ -12,22 +12,33 @@
 	<!-- Page elements and content go here. -->
 	<h1>Mapping Resistance in the Arts District</h1>
     <div id = "description">
-            The Arts District in Los Angeles has been a site of gentrification for the last two decades.<br/> 
-            But it has also been a site of resistance. This map aims to visualize the demographic changes and acts of  resistance that have emerged throughout this process of gentrification.
+            The Arts District in Los Angeles has been a site of gentrification for the last two decades. But it has also been a site of resistance.<br/> 
+            This map aims to visualize the demographic changes and acts of resistance that have emerged in this process of gentrification.
             <a href = "javascript:showDescription('essayBox')">...more</a><br/><br/>
     </div>
     <div id= "essayBox">
             <div id="essayBox-close" class="glyphicon glyphicon-remove"></div>
             <div id="essayContent">
-                    <p>The demographic data is sourced from the U.S. Census Bureau, the map boundaries are sourced from the LA Online Data Portal, and the building data is sourced from built:LA, Curbed, Google Maps, Architectural Records, and the websites of the buildings and businesses.</p>
-                    <!--<a id="backToMap" href="#">back to map</a>-->
+                    <p>Gentrification can be broadly defined as “the transformation of a working-class or vacant area of the central city into a middle-class residential and/or commercial use.”[1] These days, gentrification is a word that is thrown around in a lot of conversations about Los Angeles; however, what does this process look like on different scales and who is impacted by it?</p>
+
+                    <p>The Arts District has been one of the most noticeably transformed areas in L.A., as luxury apartments, artisan coffee shops, and pristine art galleries continue to be developed. At what cost though?</p>
+
+                    <p>As the "desirability" of the Arts District goes up, existing community memebers who can no longer afford the skyrocketing rents are driven out. Through visualizing demographic and housing data such race, poverty, and <a href="https://en.wikipedia.org/wiki/Section_8_(housing)" target="_blank">Section 8</a>-funded housing units, I aim to show how the community makeup of the Arts District has changed, particularly in relation to its surrounding communities. In addition, 360 images of sites of community action begin to show the areas where community members have been negatively impacted by gentrification and where their resistance is taking place.</p>
+
+                    <p>This project was largely inspired by the <a href="http://www.antievictionmappingproject.net" target="_blank">Anti-Eviction Mapping Project</a>, an organization which documents gentrification in the San Francisco Bay Area through a range of mediums, from data visualization to interactive video. In addition, another major inspiration for my project is the <a href="http://www.urbandisplacement.org/" target="_blank"s>Urban Displacement Project</a>, a research collaboration between UC Berkeley and UCLA, which produces data visualizations that show correlations between different demographic categories, such as a race and class, and the rates of displacement in the Bay Area and Los Angeles.</p>
+
+                    <p>The demographic data for this map is sourced from the <a href="https://factfinder.census.gov/faces/nav/jsf/pages/index.xhtml" target="_blank">U.S. Census Bureau</a>, the housing data is sourced from the <a href="https://www.huduser.gov/portal/datasets/assthsg.html" target="_blank">U.S. Department of Housing and Urban Development</a>, the map boundaries are sourced from the <a href="https://egis3.lacounty.gov/dataportal/" target="_blank">LA County GIS Data Portal</a>, and the building data is sourced from <a href="http://cityhubla.github.io/LA_Building_Age/" target="_blank">built:LA</a>, <a href="https://la.curbed.com/" target="_blank">Curbed LA</a>, <a href="https://www.google.com/maps" target="_blank">Google Maps</a>, <a href="https://www.architecturalrecord.com/" target="_blank">Architectural Record</a>, and the websites of the buildings and businesses.</p>
+
+                    <p>For a more comprehensive understanding on gentrification, please check out this wonderful <a href="https://drive.google.com/drive/folders/1xXZWweOiUWgb9M9P4M8Qutyh16f7W6Jr" target="_blank">resource guide</a> developed by the L.A.-based collective, <a href="http://www.ultrared.org/pso6.html" target="_blank">School of Echoes</a>!</p>
+                    
+                    <p id="section1">[1] Lees, Loretta, et al. The Gentrification Reader. Routledge, 2010.</p>
                     <a href = "javascript:showDescription('essayBox')">back to map</a>
             </div>
     </div>
     <form>
         <input type="radio" name="data" id="NW_CHG" onClick="showContent(this)" checked="true"/> <label for="race">Race</label>
         <input type="radio" name="data" id="POV_CHG" onClick="showContent(this)" /> <label for="poverty">Poverty</label>
-        <input type="radio" name="data" id="HOU_CHG" onClick="showContent(this)" /> <label for="affordable housing">Affordable Housing</label>
+        <input type="radio" name="data" id="HOU_CHG" onClick="showContent(this)" /> <label for="low income housing">Low Income Housing</label>
         <input type="radio" name="data" id="RES" onClick="hideContent(this)"/> <label for="acts of resistance">Acts of Resistance</label>
     </form>
     <div id="demLegend">
